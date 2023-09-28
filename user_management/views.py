@@ -71,6 +71,7 @@ class LoginView(APIView):
 #     "password":"200255"
 # }
 
+
 class UserInformation(APIView):
 
     @staticmethod
