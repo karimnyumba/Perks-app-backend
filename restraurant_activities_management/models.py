@@ -7,6 +7,7 @@ class Restaurant(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=200)
     location = models.CharField(max_length=200)
+    pic = models.ImageField(upload_to="uploads/", null=True, blank=True)
     reg_no = models.CharField(max_length=20)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -37,6 +38,7 @@ class Coupon(models.Model):
 class Award(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     restraurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    pic = models.ImageField(upload_to="uploads/", null=True, blank=True)
     product = models.CharField(max_length=200)
     points = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)

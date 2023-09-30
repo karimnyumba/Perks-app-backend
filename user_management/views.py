@@ -41,7 +41,9 @@ class RegisterUser(APIView):
 # "gender":"L"
 # }
 
+
 class LoginView(APIView):
+    permission_classes = [AllowAny]
 
     @staticmethod
     def post(request):
