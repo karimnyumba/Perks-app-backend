@@ -55,10 +55,22 @@ class CouponView(APIView):
 
     @staticmethod
     def get(request):
-        queryset = Coupon.objects.all()
-        serialized = CouponGetSerializer(instance=queryset, many=True)
-        return Response(serialized.data)
-    
+        querytype = request.GET.get("querytype")
+        print(querytype)
+        if querytype == "all":
+            queryset = Coupon.objects.all()
+            serialized = CouponGetSerializer(instance=queryset, many=True)
+            return Response(serialized.data)
+        if querytype == "single":
+            couponId = request.GET.get("coupon")
+            print(couponId)
+            queryset = Coupon.objects.get(id=couponId)
+            print(queryset)
+            serialized = CouponGetSerializer(instance=queryset)
+            return Response(serialized.data)
+        else:
+            return Response({"message": "Specify the querying type"})
+
 
 
     # {
