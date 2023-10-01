@@ -56,16 +56,13 @@ class CouponView(APIView):
     @staticmethod
     def get(request):
         querytype = request.GET.get("querytype")
-        print(querytype)
         if querytype == "all":
             queryset = Coupon.objects.all()
             serialized = CouponGetSerializer(instance=queryset, many=True)
             return Response(serialized.data)
         if querytype == "single":
             couponId = request.GET.get("coupon")
-            print(couponId)
             queryset = Coupon.objects.get(id=couponId)
-            print(queryset)
             serialized = CouponGetSerializer(instance=queryset)
             return Response(serialized.data)
         else:
@@ -143,24 +140,35 @@ class UserRestraurantView(APIView):
     @staticmethod
     def post(request):
         data = request.data
-        user_rst_data = UserRestraurant.objects.get(user=data['user'], restraurant=data['restraurant'])
-        print(user_rst_data)
-        if user_rst_data:
-            user_rst_data['total_points'] = user_rst_data['total_points'] + data['total_points']
-            user_rst_data.save()
-            return Response({"save": True, "msg": "The Points added to the user"})
-        else:
+        user_id = data.get('user')
+        restaurant_id = data.get('restraurant')
+        total_points = data.get('total_points')
+        try:
+            user_restaurant = UserRestraurant.objects.get(user=user_id, restraurant=restaurant_id)
+            print(user_restaurant)
+            user_restaurant.total_points += total_points
+            user_restaurant.save()
+        except UserRestraurant.DoesNotExist:
             serialized = UserRestraurantPostSerializer(data=data)
             if serialized.is_valid():
                 serialized.save()
                 return Response({"save": True})
-            return Response({"save": False, "error": serialized.errors})
+
+        try:
+            user = User.objects.get(id=user_id)
+            user.total_points_made += total_points
+            user.save()
+        except User.DoesNotExist:
+            return Response({"save": False, "error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response({"save": True, "msg": "The Points added to the user"})
+
 
 
     @staticmethod
     def get(request):
         userId = request.GET.get("userId")
-        queryset = UserRestraurant.objects.filter(user = userId)
+        queryset = UserRestraurant.objects.filter(user=userId)
         serialized = UserRestraurantGetSerializer(instance=queryset, many=True)
         return Response(serialized.data)
     
