@@ -28,6 +28,7 @@ class User(AbstractUser):
     role = models.PositiveIntegerField(choices=ROLE_CHOICES, default=CUSTOMER)
     created_at = models.DateTimeField(auto_now=True)
     phone_number = models.CharField(max_length=12, default="255 716 058802")
+    total_points_made = models.PositiveIntegerField(default=0)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ['fname', 'phone_number', 'lname', 'username']

@@ -143,11 +143,18 @@ class UserRestraurantView(APIView):
     @staticmethod
     def post(request):
         data = request.data
-        serialized = UserRestraurantPostSerializer(data=data)
-        if serialized.is_valid():
-            serialized.save()
-            return Response({"save": True})
-        return Response({"save": False, "error": serialized.errors})
+        user_rst_data = UserRestraurant.objects.get(user=data['user'], restraurant=data['restraurant'])
+        print(user_rst_data)
+        if user_rst_data:
+            user_rst_data['total_points'] = user_rst_data['total_points'] + data['total_points']
+            user_rst_data.save()
+            return Response({"save": True, "msg": "The Points added to the user"})
+        else:
+            serialized = UserRestraurantPostSerializer(data=data)
+            if serialized.is_valid():
+                serialized.save()
+                return Response({"save": True})
+            return Response({"save": False, "error": serialized.errors})
 
 
     @staticmethod
