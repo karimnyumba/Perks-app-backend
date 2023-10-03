@@ -51,6 +51,23 @@ class AwardPostSerializer(serializers.ModelSerializer):
             "restraurant",
             "product",
             "point",
+            "pic"
+        ]
+
+
+class AwardCountGetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AwardsCount
+        fields = "__all__"
+
+
+class AwardCountPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AwardsCount
+        fields = [
+            "award"
+            "award_code"
+            "code_used_state"
         ]
 
         

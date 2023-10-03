@@ -13,7 +13,7 @@ class Restaurant(models.Model):
 
     def __str__(self):
         return f'{self.name}'
-    
+
     class Meta:
         db_table = "Restaurant"
 
@@ -30,7 +30,7 @@ class Coupon(models.Model):
 
     def __str__(self):
         return f'{self.id}'
-    
+
     class Meta:
         db_table = "coupon"
 
@@ -44,10 +44,24 @@ class Award(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.id}'
-    
+        return f'{self.product}'
+
     class Meta:
         db_table = "award"
+
+
+class AwardsCount(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    award = models.ForeignKey(Award, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    award_code = models.PositiveIntegerField()
+    code_used_state = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.id}'
+
+    class Meta:
+        db_table = "awardcount"
 
 
 class CouponTransaction(models.Model):
@@ -59,7 +73,7 @@ class CouponTransaction(models.Model):
 
     def __str__(self):
         return f'{self.id}'
-    
+
     class Meta:
         db_table = "coupon_transaction"
 
@@ -73,8 +87,6 @@ class UserRestraurant(models.Model):
 
     def __str__(self):
         return f'{self.id}'
-    
+
     class Meta:
         db_table = "user_restraurant"
-
-    

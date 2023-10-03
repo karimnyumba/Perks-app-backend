@@ -1,3 +1,5 @@
+import random
+
 from rest_framework.response import Response
 from .models import *
 from .serializer import *
@@ -85,6 +87,7 @@ class AwardView(APIView):
     @staticmethod
     def post(request):
         data = request.data
+
         serialized = AwardPostSerializer(data=data)
         if serialized.is_valid():
             serialized.save()
@@ -98,13 +101,50 @@ class AwardView(APIView):
         queryset = Award.objects.filter(restraurant=restraurantId)
         serialized = AwardGetSerializer(instance=queryset, many=True)
         return Response(serialized.data)
-    
 
     # {
     #     "restraurant": "00d749d0-eb33-40d0-a490-784d34a3e0ce",
     #     "product":"Burger",
     #     "point": 1000
     # }
+
+
+class GenerateRewards(APIView):
+
+    @staticmethod
+    def post(request):
+        data = request.data
+        awardcount = data.get('count')
+
+        for num in range(0, awardcount):
+            award_data = {
+                "award": data.get('award'),
+                "award_code": random.randint(1001, 9998),
+                "code_used_state": False
+            }
+            serialized = AwardCountPostSerializer(data=award_data)
+            if serialized.is_valid():
+                serialized.save()
+        return Response({"save": True})
+
+    @staticmethod
+    def get(request):
+        querytype = request.GET.get("querytype")
+        award = request.GET.get("award")
+        award_id = request.GET.get("id")
+
+        if querytype == "award":
+            queryset = AwardsCount.objects.filter(award=award)
+            serialized = AwardCountGetSerializer(instance=queryset, many=True)
+            return Response(serialized.data)
+        elif querytype == "use_award":
+            try:
+                award_wanted = AwardsCount.objects.get(id=award_id)
+                award_wanted.code_used_state = True
+                award_wanted.save()
+                return Response({"success": True, "award_code": award_wanted.award_code})
+            except AwardsCount.DoesNotExist:
+                return Response({"success": False, "award_code": "The award is not available or already used"})
 
 
 class CouponTransactionView(APIView):

@@ -9,4 +9,5 @@ urlpatterns = [
     path('award', AwardView.as_view()),
     path('user-restraurant', UserRestraurantView.as_view()),
     path('user-dashboard/<slug:userId>', DashboardData.as_view()),
+    path('generate_rewards', DashboardData.as_view()),
 ]
