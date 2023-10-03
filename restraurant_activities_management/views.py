@@ -163,7 +163,21 @@ class CouponTransactionView(APIView):
     @staticmethod
     def post(request):
         data = request.data
-        serialized = CouponTransactionPostSerializer(data=data)
+        print(data)
+        points_used = int(data.get("point_used"))
+        trans_data = {
+            "user": data.get("user"),
+            "award": data.get("award"),
+            "point_used": points_used
+        }
+        print(data.get("restaurant_id"))
+        serialized = CouponTransactionPostSerializer(data=trans_data)
+        user_restaurant = UserRestraurant.objects.get(user=data.get("user"), restraurant=data.get("restaurant_id"))
+        user = User.objects.get(id=data.get("user"))
+        user.total_points_made -= points_used
+        user_restaurant.total_points -= points_used
+        user_restaurant.save()
+        user.save()
         if serialized.is_valid():
             serialized.save()
             return Response({"save": True})
