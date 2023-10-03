@@ -50,7 +50,7 @@ class AwardPostSerializer(serializers.ModelSerializer):
         fields = [
             "restraurant",
             "product",
-            "point",
+            "points",
             "pic"
         ]
 
@@ -65,8 +65,8 @@ class AwardCountPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = AwardsCount
         fields = [
-            "award"
-            "award_code"
+            "award",
+            "award_code",
             "code_used_state"
         ]
 

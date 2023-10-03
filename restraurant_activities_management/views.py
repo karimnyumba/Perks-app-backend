@@ -87,8 +87,17 @@ class AwardView(APIView):
     @staticmethod
     def post(request):
         data = request.data
-
-        serialized = AwardPostSerializer(data=data)
+        reward_threshold = int(data.get("threshold"))
+        reward_ratio = 0.5
+        reward_value = int(data.get("reward_value"))
+        numbers_of_points = (reward_threshold * reward_ratio) / reward_value
+        award_data = {
+            "restraurant": data.get("restraurant"),
+            "pic": data.get("pic"),
+            "product": data.get("product"),
+            "points": int(numbers_of_points)
+        }
+        serialized = AwardPostSerializer(data=award_data)
         if serialized.is_valid():
             serialized.save()
             return Response({"save": True})
@@ -114,7 +123,7 @@ class GenerateRewards(APIView):
     @staticmethod
     def post(request):
         data = request.data
-        awardcount = data.get('count')
+        awardcount = int(data.get('count'))
 
         for num in range(0, awardcount):
             award_data = {
@@ -132,7 +141,7 @@ class GenerateRewards(APIView):
         querytype = request.GET.get("querytype")
         award = request.GET.get("award")
         award_id = request.GET.get("id")
-
+        print(award_id)
         if querytype == "award":
             queryset = AwardsCount.objects.filter(award=award)
             serialized = AwardCountGetSerializer(instance=queryset, many=True)
@@ -145,6 +154,8 @@ class GenerateRewards(APIView):
                 return Response({"success": True, "award_code": award_wanted.award_code})
             except AwardsCount.DoesNotExist:
                 return Response({"success": False, "award_code": "The award is not available or already used"})
+        else:
+            return Response({"message": "Specify the querying type"})
 
 
 class CouponTransactionView(APIView):
@@ -173,6 +184,7 @@ class CouponTransactionView(APIView):
     #     "award": "00d749d0-+++DEMO+++-0-784d34a3e0ce",
     #     "point_used": 1000
     # }
+
 
 
 class UserRestraurantView(APIView):
