@@ -59,6 +59,19 @@ class AwardCountGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = AwardsCount
         fields = "__all__"
+        depth = 2
+
+
+class AwardCountGetTopSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AwardsCount
+        fields = "__all__"
+        depth = 3
+
+    @classmethod
+    def get_last_5_records(cls):
+        # Retrieve the last 5 records based on the 'created_at' field
+        return AwardsCount.objects.order_by('-created_at')[:5]
 
 
 class AwardCountPostSerializer(serializers.ModelSerializer):

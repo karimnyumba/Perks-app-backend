@@ -158,8 +158,8 @@ class GenerateRewards(APIView):
             except AwardsCount.DoesNotExist:
                 return Response({"success": False, "award_code": "The award is not available or already used"})
         elif querytype == "user_redeemed_rewards":
-            queryset = AwardsCount.objects.filter(user=user_id)
-            serialized = AwardCountGetSerializer(instance=queryset, many=True)
+            queryset = AwardsCount.objects.filter(user=user_id).order_by('-created_at')[:5]
+            serialized = AwardCountGetTopSerializer(instance=queryset, many=True)
             return Response(serialized.data)
         else:
             return Response({"message": "Specify the querying type"})
