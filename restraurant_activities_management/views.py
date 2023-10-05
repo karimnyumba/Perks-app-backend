@@ -73,7 +73,7 @@ class CouponView(APIView):
 
 
     # {
-    #     "restraurant": "00d749d0-eb33-40d0-a490-784d34a3e0ce",
+    #     "restraurant": "00d749d0-e++++++++++++++++++++++++490-784d34a3e0ce",
     #     "start_amount":1000,
     #     "end_amount": 2000,
     #     "coupon_no": "1111111",
@@ -112,7 +112,7 @@ class AwardView(APIView):
         return Response(serialized.data)
 
     # {
-    #     "restraurant": "00d749d0-eb33-40d0-a490-784d34a3e0ce",
+    #     "restraurant": "00d749d0-eb33-40d0-=======demkjks-----------784d34a3e0ce",
     #     "product":"Burger",
     #     "point": 1000
     # }
@@ -141,6 +141,7 @@ class GenerateRewards(APIView):
         querytype = request.GET.get("querytype")
         award = request.GET.get("award")
         award_id = request.GET.get("id")
+        user_id = request.GET.get("user")
         print(award_id)
         if querytype == "award":
             queryset = AwardsCount.objects.filter(award=award)
@@ -148,12 +149,18 @@ class GenerateRewards(APIView):
             return Response(serialized.data)
         elif querytype == "use_award":
             try:
+                user = User.objects.get(id=user_id)
                 award_wanted = AwardsCount.objects.get(id=award_id)
                 award_wanted.code_used_state = True
+                award_wanted.user = user
                 award_wanted.save()
                 return Response({"success": True, "award_code": award_wanted.award_code})
             except AwardsCount.DoesNotExist:
                 return Response({"success": False, "award_code": "The award is not available or already used"})
+        elif querytype == "user_redeemed_rewards":
+            queryset = AwardsCount.objects.filter(user=user_id)
+            serialized = AwardCountGetSerializer(instance=queryset, many=True)
+            return Response(serialized.data)
         else:
             return Response({"message": "Specify the querying type"})
 
@@ -213,19 +220,15 @@ class UserRestraurantView(APIView):
             user_restaurant = UserRestraurant.objects.get(user=user_id, restraurant=restaurant_id)
             print(user_restaurant)
             user_restaurant.total_points += total_points
+            user = User.objects.get(id=user_id)
+            user.total_points_made += total_points
+            user.save()
             user_restaurant.save()
         except UserRestraurant.DoesNotExist:
             serialized = UserRestraurantPostSerializer(data=data)
             if serialized.is_valid():
                 serialized.save()
                 return Response({"save": True})
-
-        try:
-            user = User.objects.get(id=user_id)
-            user.total_points_made += total_points
-            user.save()
-        except User.DoesNotExist:
-            return Response({"save": False, "error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
         return Response({"save": True, "msg": "The Points added to the user"})
 

@@ -33,8 +33,8 @@ class RegisterUser(APIView):
 # {
 # "fname":"Hassan",
 # "lname":"Hassan",
-# "email":"hassan@gmail.com",
-# "password":"has123",
+# "email":"hassan@gm++++++++++++++.com",
+# "password":"ha+++++++++++++++++++++3",
 # "username":"hassaan",
 # "phone_number":"078676726",
 # "role":1,
@@ -69,8 +69,8 @@ class LoginView(APIView):
             return Response(response)
 
 # {
-#     "email":"karimunyumba@gmail.com",
-#     "password":"200255"
+#     "email":"kaai++++++++++++++++++++++l.com",
+#     "password":"2+++++++++++++++++++++++++++++++5"
 # }
 
 

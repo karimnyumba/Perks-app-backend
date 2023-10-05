@@ -67,7 +67,7 @@ class AwardCountPostSerializer(serializers.ModelSerializer):
         fields = [
             "award",
             "award_code",
-            "code_used_state"
+            "code_used_state",
         ]
 
         
