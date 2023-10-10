@@ -27,11 +27,12 @@ class User(AbstractUser):
     profile = models.ImageField(upload_to="uploads/", null=True, blank=True)
     role = models.PositiveIntegerField(choices=ROLE_CHOICES, default=CUSTOMER)
     created_at = models.DateTimeField(auto_now=True)
-    phone_number = models.CharField(max_length=12, default="255 716 058802")
+    phone_number = models.CharField(max_length=12, unique=True)
     total_points_made = models.PositiveIntegerField(default=0)
+    total_lifetime_points = models.PositiveIntegerField(default=0)
 
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ['fname', 'phone_number', 'lname', 'username']
+    USERNAME_FIELD = "phone_number"
+    REQUIRED_FIELDS = ['fname', 'lname', 'username']
     def __str__(self):
         return self.username
 

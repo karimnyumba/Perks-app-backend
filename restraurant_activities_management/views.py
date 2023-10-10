@@ -1,5 +1,9 @@
 import random
-
+import smtplib
+import tempfile
+from email.mime.application import MIMEApplication
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from rest_framework.response import Response
 from .models import *
 from .serializer import *
@@ -17,7 +21,6 @@ class RestaurantView(APIView):
             return Response({"save": True})
         return Response({"save": False, "error": serialized.errors})
 
-
     @staticmethod
     def get(request):
         querytype = request.GET.get("querytype")
@@ -32,15 +35,12 @@ class RestaurantView(APIView):
             return Response(serialized.data)
         else:
             return Response({"message": "Specify the querying type"})
-            
-    
 
     # {
     #     "name": "Shishi food",
     #     "location":"Dodoma",
     #     "reg_no": "1111111"
     # }
-
 
 
 class CouponView(APIView):
@@ -53,7 +53,6 @@ class CouponView(APIView):
             serialized.save()
             return Response({"save": True})
         return Response({"save": False, "error": serialized.errors})
-
 
     @staticmethod
     def get(request):
@@ -70,8 +69,6 @@ class CouponView(APIView):
         else:
             return Response({"message": "Specify the querying type"})
 
-
-
     # {
     #     "restraurant": "00d749d0-e++++++++++++++++++++++++490-784d34a3e0ce",
     #     "start_amount":1000,
@@ -79,7 +76,6 @@ class CouponView(APIView):
     #     "coupon_no": "1111111",
     #     "point": 100
     # }
-
 
 
 class AwardView(APIView):
@@ -102,7 +98,6 @@ class AwardView(APIView):
             serialized.save()
             return Response({"save": True})
         return Response({"save": False, "error": serialized.errors})
-
 
     @staticmethod
     def get(request):
@@ -165,6 +160,44 @@ class GenerateRewards(APIView):
             return Response({"message": "Specify the querying type"})
 
 
+class Recommendations(APIView):
+    @staticmethod
+    def post(request):
+        data = request.data
+        print(data)
+        try:
+            # Set up the SMTP server
+            recommendationText = request.data['email']
+
+            smtp_server = "smtp.gmail.com"
+            smtp_port = 587
+            smtp_username = "michaelcyril71@gmail.com"
+            smtp_password = " hlnrjwefjbtvadrw"
+            smtp_sender = "michaelcyril71@gmail.com"
+            smtp_recipient = "michaelcyril71@gmail.com"
+
+            # Create a message object
+            message = MIMEMultipart()
+            message['From'] = smtp_sender
+            message['To'] = smtp_recipient
+            message['Subject'] = 'RECOMMENDATION EMAIL.'
+
+            message.attach(MIMEText(recommendationText))
+
+            # Connect to the SMTP server and send the email
+            with smtplib.SMTP(smtp_server, smtp_port) as server:
+                server.starttls()
+                server.login(smtp_username, smtp_password)
+                server.sendmail(smtp_sender, smtp_recipient, message.as_string())
+
+            # print()
+            # return Response({'message': "Email sent successfully!"})
+            return Response({'save': False})
+        except:
+            # return Response({'message': "Authentication failed"})
+            return Response({'save': False})
+
+
 class CouponTransactionView(APIView):
 
     @staticmethod
@@ -190,22 +223,18 @@ class CouponTransactionView(APIView):
             return Response({"save": True})
         return Response({"save": False, "error": serialized.errors})
 
-
     @staticmethod
     def get(request):
         userId = request.GET.get("userId")
         queryset = CouponTransaction.objects.filter(user=userId)
         serialized = CouponTransactionGetSerializer(instance=queryset, many=True)
         return Response(serialized.data)
-    
-
 
     # {
     #     "user": "00d749d0-+++DEMO+++-0-784d34a3e0ce",
     #     "award": "00d749d0-+++DEMO+++-0-784d34a3e0ce",
     #     "point_used": 1000
     # }
-
 
 
 class UserRestraurantView(APIView):
@@ -218,10 +247,19 @@ class UserRestraurantView(APIView):
         total_points = data.get('total_points')
         try:
             user_restaurant = UserRestraurant.objects.get(user=user_id, restraurant=restaurant_id)
+            transactioned = TransactionPostSerializer(data={
+                "user": user_id,
+                "restaurant": restaurant_id,
+                "points_made": total_points
+            })
+            if transactioned.is_valid():
+                transactioned.save()
             print(user_restaurant)
             user_restaurant.total_points += total_points
+            user_restaurant.total_lifetime_points += total_points
             user = User.objects.get(id=user_id)
             user.total_points_made += total_points
+            user.total_lifetime_points += total_points
             user.save()
             user_restaurant.save()
         except UserRestraurant.DoesNotExist:
@@ -232,16 +270,12 @@ class UserRestraurantView(APIView):
 
         return Response({"save": True, "msg": "The Points added to the user"})
 
-
-
     @staticmethod
     def get(request):
         userId = request.GET.get("userId")
         queryset = UserRestraurant.objects.filter(user=userId)
         serialized = UserRestraurantGetSerializer(instance=queryset, many=True)
         return Response(serialized.data)
-    
-
 
     # {
     #     "user": "00d749d0-+++DEMO+++-0-784d34a3e0ce",
@@ -259,6 +293,3 @@ class DashboardData(APIView):
             total_ponts = total_ponts + data.total_points
         response = {"total_points": total_ponts}
         return Response(response)
-    
-    
-

@@ -47,13 +47,13 @@ class LoginView(APIView):
 
     @staticmethod
     def post(request):
-        email = request.data.get('email')
+        phone_number = request.data.get('phone_number')
         password = request.data.get('password')
-        print('Data: ', email, password)
-        user = authenticate(email=email, password=password)
+        print('Data: ', phone_number, password)
+        user = authenticate(phone_number=phone_number, password=password)
         if user is not None:
             login(request, user)
-            user_id = User.objects.get(email=email)
+            user_id = User.objects.get(phone_number=phone_number)
             user_info = UserSerializer(instance=user_id, many=False).data
             response = {
                 'token': get_user_token(user_id),
@@ -67,9 +67,9 @@ class LoginView(APIView):
             }
 
             return Response(response)
-
+#
 # {
-#     "email":"kaai++++++++++++++++++++++l.com",
+#     "phone_number":"255712177151",
 #     "password":"2+++++++++++++++++++++++++++++++5"
 # }
 

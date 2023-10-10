@@ -50,6 +50,14 @@ class Award(models.Model):
         db_table = "award"
 
 
+class Transactions(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    points_made = models.IntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
 class AwardsCount(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     award = models.ForeignKey(Award, on_delete=models.CASCADE)
@@ -84,6 +92,7 @@ class UserRestraurant(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     restraurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     total_points = models.IntegerField()
+    total_lifetime_points = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

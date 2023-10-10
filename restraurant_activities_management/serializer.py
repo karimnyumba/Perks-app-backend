@@ -116,3 +116,20 @@ class UserRestraurantPostSerializer(serializers.ModelSerializer):
             "restraurant",
             "total_points",
         ]
+
+
+class TransactionGetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transactions
+        fields = "__all__"
+        depth = 2
+
+
+class TransactionPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transactions
+        fields = [
+            "user",
+            "restaurant",
+            "points_made",
+        ]

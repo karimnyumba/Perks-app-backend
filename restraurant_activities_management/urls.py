@@ -10,5 +10,6 @@ urlpatterns = [
     path('user-restraurant', UserRestraurantView.as_view()),
     path('user-dashboard/<slug:userId>', DashboardData.as_view()),
     path('generate_rewards', GenerateRewards.as_view()),
-    path('use_points', CouponTransactionView.as_view())
+    path('use_points', CouponTransactionView.as_view()),
+    path("send_recommendation", Recommendations.as_view())
 ]
