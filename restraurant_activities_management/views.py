@@ -18,6 +18,16 @@ class RestaurantView(APIView):
         serialized = RestraurantPostSerializer(data=data)
         if serialized.is_valid():
             serialized.save()
+            restaurant_added = Restaurant.objects.get(reg_no=serialized['reg_no'].value)
+            all_users = User.objects.all()
+            for user in all_users:
+                user_rt_serialized = UserRestraurantPostSerializer(data={
+                    "user": user.id,
+                    "restraurant": restaurant_added.id,
+                    "total_points": 0
+                })
+                if user_rt_serialized.is_valid():
+                    user_rt_serialized.save()
             return Response({"save": True})
         return Response({"save": False, "error": serialized.errors})
 
@@ -164,6 +174,7 @@ class Recommendations(APIView):
     @staticmethod
     def post(request):
         data = request.data
+        print("----------------------------")
         print(data)
         try:
             # Set up the SMTP server
@@ -171,10 +182,10 @@ class Recommendations(APIView):
 
             smtp_server = "smtp.gmail.com"
             smtp_port = 587
-            smtp_username = "michaelcyril71@gmail.com"
+            smtp_username = "perks225@gmail.com"
             smtp_password = " hlnrjwefjbtvadrw"
-            smtp_sender = "michaelcyril71@gmail.com"
-            smtp_recipient = "michaelcyril71@gmail.com"
+            smtp_sender = "perks225@gmail.com"
+            smtp_recipient = "perks225@gmail.com"
 
             # Create a message object
             message = MIMEMultipart()
@@ -249,7 +260,7 @@ class UserRestraurantView(APIView):
             user_restaurant = UserRestraurant.objects.get(user=user_id, restraurant=restaurant_id)
             transactioned = TransactionPostSerializer(data={
                 "user": user_id,
-                "restaurant": restaurant_id,
+                "coupon": data.get('coupon'),
                 "points_made": total_points
             })
             if transactioned.is_valid():

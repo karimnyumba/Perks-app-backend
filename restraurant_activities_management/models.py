@@ -8,7 +8,7 @@ class Restaurant(models.Model):
     name = models.CharField(max_length=200)
     location = models.CharField(max_length=200)
     pic = models.ImageField(upload_to="uploads/", null=True, blank=True)
-    reg_no = models.CharField(max_length=20)
+    reg_no = models.CharField(max_length=20, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -52,7 +52,7 @@ class Award(models.Model):
 
 class Transactions(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     points_made = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)

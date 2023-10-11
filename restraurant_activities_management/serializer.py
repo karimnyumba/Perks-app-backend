@@ -130,6 +130,6 @@ class TransactionPostSerializer(serializers.ModelSerializer):
         model = Transactions
         fields = [
             "user",
-            "restaurant",
+            "coupon",
             "points_made",
         ]
