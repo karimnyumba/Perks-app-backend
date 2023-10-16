@@ -173,17 +173,16 @@ class GenerateRewards(APIView):
 class Recommendations(APIView):
     @staticmethod
     def post(request):
-        data = request.data
-        print("----------------------------")
-        print(data)
         try:
-            # Set up the SMTP server
-            recommendationText = request.data['email']
+            data = request.data
+            recommendationtext = data.get('recommendationText')
+            print(recommendationtext)
 
+            # SMTP configuration
             smtp_server = "smtp.gmail.com"
             smtp_port = 587
             smtp_username = "perks225@gmail.com"
-            smtp_password = " hlnrjwefjbtvadrw"
+            smtp_password = "hlnr jwef jbtv adrw"
             smtp_sender = "perks225@gmail.com"
             smtp_recipient = "perks225@gmail.com"
 
@@ -191,9 +190,9 @@ class Recommendations(APIView):
             message = MIMEMultipart()
             message['From'] = smtp_sender
             message['To'] = smtp_recipient
-            message['Subject'] = 'RECOMMENDATION EMAIL.'
+            message['Subject'] = 'RECOMMENDATION EMAIL'
 
-            message.attach(MIMEText(recommendationText))
+            message.attach(MIMEText(recommendationtext, 'plain'))
 
             # Connect to the SMTP server and send the email
             with smtplib.SMTP(smtp_server, smtp_port) as server:
@@ -201,12 +200,9 @@ class Recommendations(APIView):
                 server.login(smtp_username, smtp_password)
                 server.sendmail(smtp_sender, smtp_recipient, message.as_string())
 
-            # print()
-            # return Response({'message': "Email sent successfully!"})
-            return Response({'save': False})
-        except:
-            # return Response({'message': "Authentication failed"})
-            return Response({'save': False})
+            return Response({'message': "Email sent successfully!"})
+        except Exception as e:
+            return Response({'message': f"Email sending failed: {str(e)}"})
 
 
 class CouponTransactionView(APIView):

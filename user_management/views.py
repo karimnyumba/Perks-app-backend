@@ -1,3 +1,4 @@
+from django.db.models import QuerySet
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -7,6 +8,8 @@ from django.contrib.auth import authenticate, login, update_session_auth_hash
 from .tokens import get_user_token
 from .models import User
 from rest_framework.generics import UpdateAPIView
+from restraurant_activities_management.models import Restaurant
+from restraurant_activities_management.serializer import UserRestraurantPostSerializer
 
 
 class RegisterUser(APIView):
@@ -17,14 +20,30 @@ class RegisterUser(APIView):
         data = request.data
         print(request.data)
         serializer = UserSerializer(data=data)
+        print(serializer.is_valid())
+        if not serializer.is_valid():
+            errors = serializer.errors
+            print(errors)
+            return Response({'save': False, 'errors': errors}, status=status.HTTP_400_BAD_REQUEST)
         if serializer.is_valid():
             email = data['email']
             user = User.objects.filter(email=email)
             if user:
-                message = {'status': False, 'message': 'Username already exists'}
+                message = {'status': False, 'message': 'phone number or email already exists'}
                 return Response(message, status=status.HTTP_400_BAD_REQUEST)
-            user = serializer.save()
+            userr = serializer.save()
+            print(userr.phone_number)
+            user_added = User.objects.get(phone_number=userr.phone_number)
+            all_rsts: QuerySet[Restaurant] = Restaurant.objects.all()
 
+            for rst in all_rsts:
+                user_rt_serialized = UserRestraurantPostSerializer(data={
+                    "user": user_added.id,
+                    "restraurant": rst.id,
+                    "total_points": 0
+                })
+                if user_rt_serialized.is_valid():
+                    user_rt_serialized.save()
             message = {'save': True}
             return Response(message)
 
