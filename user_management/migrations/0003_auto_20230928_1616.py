@@ -10,25 +10,25 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='user',
-            name='fname',
-            field=models.CharField(blank=True, max_length=100),
-        ),
-        migrations.AddField(
-            model_name='user',
-            name='gender',
-            field=models.CharField(blank=True, choices=[('M', 'MALE'), ('F', 'FEMALE')], max_length=6, null=True),
-        ),
-        migrations.AddField(
-            model_name='user',
-            name='lname',
-            field=models.CharField(blank=True, max_length=100),
-        ),
+        # migrations.AddField(
+        #     model_name='user',
+        #     name='fname',
+        #     field=models.CharField(blank=True, max_length=100),
+        # ),
+        # migrations.AddField(
+        #     model_name='user',
+        #     name='gender',
+        #     field=models.CharField(blank=True, choices=[('M', 'MALE'), ('F', 'FEMALE')], max_length=6, null=True),
+        # ),
+        # migrations.AddField(
+        #     model_name='user',
+        #     name='lname',
+        #     field=models.CharField(blank=True, max_length=100),
+        # ),
         migrations.AddField(
             model_name='user',
             name='phone_number',
-            field=models.CharField(default='255 716 058802', max_length=12),
+            field=models.CharField(max_length=12),
         ),
         migrations.AddField(
             model_name='user',
