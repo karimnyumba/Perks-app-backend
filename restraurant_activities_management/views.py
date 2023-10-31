@@ -182,14 +182,14 @@ class Recommendations(APIView):
             smtp_server = "smtp.gmail.com"
             smtp_port = 587
             smtp_username = "perks225@gmail.com"
-            smtp_password = "hlnr jwef jbtv adrw"
+            smtp_password = "jsechbwefinejznt"
             smtp_sender = "perks225@gmail.com"
             smtp_recipient = "perks225@gmail.com"
 
             # Create a message object
             message = MIMEMultipart()
-            message['From'] = smtp_sender
-            message['To'] = smtp_recipient
+            message['From'] = "perks225@gmail.com"
+            message['To'] = "perks225@gmail.com"
             message['Subject'] = 'RECOMMENDATION EMAIL'
 
             message.attach(MIMEText(recommendationtext, 'plain'))
@@ -198,7 +198,7 @@ class Recommendations(APIView):
             with smtplib.SMTP(smtp_server, smtp_port) as server:
                 server.starttls()
                 server.login(smtp_username, smtp_password)
-                server.sendmail(smtp_sender, smtp_recipient, message.as_string())
+                server.sendmail(smtp_username, smtp_recipient, message.as_string())
 
             return Response({'message': "Email sent successfully!"})
         except Exception as e:

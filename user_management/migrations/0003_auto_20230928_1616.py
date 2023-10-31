@@ -10,21 +10,21 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        # migrations.AddField(
-        #     model_name='user',
-        #     name='fname',
-        #     field=models.CharField(blank=True, max_length=100),
-        # ),
-        # migrations.AddField(
-        #     model_name='user',
-        #     name='gender',
-        #     field=models.CharField(blank=True, choices=[('M', 'MALE'), ('F', 'FEMALE')], max_length=6, null=True),
-        # ),
-        # migrations.AddField(
-        #     model_name='user',
-        #     name='lname',
-        #     field=models.CharField(blank=True, max_length=100),
-        # ),
+        migrations.AddField(
+            model_name='user',
+            name='fname',
+            field=models.CharField(blank=True, max_length=100),
+        ),
+        migrations.AddField(
+            model_name='user',
+            name='gender',
+            field=models.CharField(blank=True, choices=[('M', 'MALE'), ('F', 'FEMALE')], max_length=6, null=True),
+        ),
+        migrations.AddField(
+            model_name='user',
+            name='lname',
+            field=models.CharField(blank=True, max_length=100),
+        ),
         migrations.AddField(
             model_name='user',
             name='phone_number',

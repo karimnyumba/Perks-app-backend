@@ -149,24 +149,27 @@ class ChangePasswordView(UpdateAPIView):
 
 
 class UpdateUserView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     @staticmethod
     def post(request):
         gender = request.data['gender']
         email = request.data['email']
         fname = request.data['fname']
+        profile = request.data['profile']
         lname = request.data['lname']
         phone_number = request.data['phone_number']
-        if request.user.username == email:
+        if phone_number:
             try:
-                query = User.objects.get(email=email)
-                query.email = email,
+                query = User.objects.get(phone_number=phone_number)
+                query.email = email
                 query.fname = fname
                 query.lname = lname
+                query.gender = gender
                 query.phone_number = phone_number
+                query.profile = profile
                 query.save()
-                return Response({'message': 'success'})
+                return Response({'save': True, "user": UserSerializer(instance=query, many=False).data})
             except User.DoesNotExist:
                 return Response({'message': 'You can not change the email'})
 

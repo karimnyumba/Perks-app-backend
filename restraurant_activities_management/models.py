@@ -64,7 +64,7 @@ class AwardsCount(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     award_code = models.PositiveIntegerField()
     code_used_state = models.BooleanField(default=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,  null=True, blank=True, db_column='user_id')
 
     def __str__(self):
         return f'{self.id}'

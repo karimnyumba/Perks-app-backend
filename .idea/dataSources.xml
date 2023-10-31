@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:sqlite:D:\Projects\Python\Django\Perks-backend\db.sqlite3</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="PERKS_DB@167.71.71.176" uuid="6e9b4aad-5c53-4e5d-aa7e-66c0bd8d72d2">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://167.71.71.176:3306/PERKS_DB</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
